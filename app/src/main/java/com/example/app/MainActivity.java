@@ -2,6 +2,8 @@ package com.example.app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import java.net.URISyntaxException;
@@ -13,14 +15,14 @@ import android.content.SharedPreferences;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static String APP_PREFERENCES_ROOM = "room";
-    private SharedPreferences mSettings;
+    private String room = "null";
+
     private Socket mSocket;
     {
         try {
             mSocket = IO.socket("http://chat.socket.io");
         }
-        catch (URISyntaxException e) {}
+        catch (URISyntaxException ignored) {}
     }
 
 
@@ -30,6 +32,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String APP_PREFERENCES = "usersettings";
+        SharedPreferences mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+
+
+        String APP_PREFERENCES_ROOM = "room";
+        if(mSettings.contains(APP_PREFERENCES_ROOM)) {
+            room = mSettings.getString(APP_PREFERENCES_ROOM, "null");
+        }
+
+        if(room.equals("null")) {
+            Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
+            startActivity(intent);
+        }
+
         mSocket.connect();
+
+
     }
 }
