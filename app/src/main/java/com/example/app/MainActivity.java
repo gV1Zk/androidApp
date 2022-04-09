@@ -1,20 +1,14 @@
 package com.example.app;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-
-import java.net.URISyntaxException;
-
-import io.socket.client.IO;
-import io.socket.client.Socket;
-
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.yandex.mapkit.Animation;
 import com.yandex.mapkit.MapKitFactory;
@@ -22,12 +16,16 @@ import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.map.CameraPosition;
 import com.yandex.mapkit.mapview.MapView;
 
+import java.net.URISyntaxException;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+
 public class MainActivity extends AppCompatActivity {
     private String room = "null";
 
     private Button changeRoomBut;
-    private TextView coordsText;
-    private TextView roomText;
+    private TextView roomText, coordsText;
 
     private MapView mapView;
 
@@ -39,15 +37,16 @@ public class MainActivity extends AppCompatActivity {
         catch (URISyntaxException ignored) {}
     }
 
-    private String APP_PREFERENCES = "usersettings";
+    private final String APP_PREFERENCES = "usersettings";
     private SharedPreferences mSettings;
-    private String APP_PREFERENCES_ROOM = "room";
+    private final String APP_PREFERENCES_ROOM = "room";
 
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
         MapKitFactory.setApiKey("0f07d937-a358-4269-836d-33d9285feea5");
         MapKitFactory.initialize(this);
         setContentView(R.layout.activity_main);

@@ -2,21 +2,20 @@ package com.example.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-//import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+
+//import androidx.annotation.Nullable;
 
 public class RegistrationActivity extends AppCompatActivity {
     private Button subBut;
     private EditText roomEdit;
-    private TextView infoText;
-    private String APP_PREFERENCES = "usersettings";
     private String APP_PREFERENCES_NEW_ROOM = "room";
     private SharedPreferences mSettings;
     @Override
@@ -24,14 +23,17 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
 
         setContentView(R.layout.activity_reg);
 
+        String APP_PREFERENCES = "usersettings";
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         subBut = findViewById(R.id.submit_reg);
         roomEdit = findViewById(R.id.editRoom);
-        infoText = findViewById(R.id.textView);
+        TextView infoText = findViewById(R.id.infoText);
+        infoText.setText("Введите имя комнаты");
 
 
 
