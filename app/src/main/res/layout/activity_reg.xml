@@ -13,7 +13,6 @@
         android:layout_marginEnd="159dp"
         android:layout_marginBottom="243dp"
         android:text="SUBMIT"
-        android:background="@color/red"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -37,6 +36,7 @@
 
     <EditText
         android:id="@+id/editRoom"
+        android:imeOptions="actionDone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="104dp"

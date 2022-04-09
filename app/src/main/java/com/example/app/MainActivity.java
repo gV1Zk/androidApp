@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         changeRoomBut = findViewById(R.id.buttonChangeRoom);
         coordsText = findViewById(R.id.TextCoords);
         roomText = findViewById(R.id.TextCurRoom);
+        coordsText.setText("Everything all right");
 
         mapView = findViewById(R.id.mapView_);
         mapView.getMap()

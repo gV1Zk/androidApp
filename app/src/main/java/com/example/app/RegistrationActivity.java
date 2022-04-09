@@ -33,7 +33,7 @@ public class RegistrationActivity extends AppCompatActivity {
         subBut = findViewById(R.id.submit_reg);
         roomEdit = findViewById(R.id.editRoom);
         TextView infoText = findViewById(R.id.infoText);
-        infoText.setText("Введите имя комнаты");
+        infoText.setText("room id");
 
 
 
