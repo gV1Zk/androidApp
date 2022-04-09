@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.App" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="android:windowBackground">@color/darkTheme</item>
+        <item name="android:colorBackground">@color/darkTheme</item>
         <item name="android:navigationBarColor">@color/darkRed</item>
         <!-- Primary brand color. -->
         <item name="android:windowNoTitle">true</item>

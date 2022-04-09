@@ -7,12 +7,12 @@
 
     <Button
         android:id="@+id/submit_reg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="129dp"
+        android:layout_height="65dp"
         android:layout_marginStart="159dp"
         android:layout_marginEnd="159dp"
         android:layout_marginBottom="243dp"
-        android:text="SUBMIT"
+        android:text="CONFIRM"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +21,8 @@
 
     <TextView
         android:id="@+id/infoText"
-        android:textSize="20dp"
+        android:textSize="25sp"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="176dp"
@@ -36,18 +37,22 @@
 
     <EditText
         android:id="@+id/editRoom"
-        android:imeOptions="actionDone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="265dp"
+        android:layout_height="60dp"
         android:layout_marginStart="104dp"
         android:layout_marginEnd="104dp"
         android:layout_marginBottom="175dp"
         android:ems="10"
+        android:gravity="center"
+        android:hint="room"
+        android:imeOptions="actionDone"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        android:text="room"
+        android:text=""
+        android:textSize="25dp"
         app:layout_constraintBottom_toTopOf="@+id/submit_reg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/infoText" />
+        app:layout_constraintTop_toBottomOf="@+id/infoText"
+        android:autofillHints="" />
 </androidx.constraintlayout.widget.ConstraintLayout>

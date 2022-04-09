@@ -22,7 +22,8 @@
 
     <TextView
         android:id="@+id/TextCoords"
-        android:textSize="20dp"
+        android:textSize="20sp"
+        android:gravity="left"
         android:layout_width="174dp"
         android:layout_height="51dp"
         android:layout_marginStart="32dp"
@@ -36,14 +37,15 @@
 
     <TextView
         android:id="@+id/TextCurRoom"
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginStart="165dp"
+        android:layout_width="160dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="100dp"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="188dp"
+        android:layout_marginEnd="100dp"
         android:layout_marginBottom="30dp"
+        android:gravity="center"
         android:text="default"
+        android:textSize="23sp"
         app:layout_constraintBottom_toTopOf="@+id/LinLay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
