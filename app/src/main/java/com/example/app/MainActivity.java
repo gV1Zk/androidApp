@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,7 +14,9 @@ import com.yandex.mapkit.Animation;
 import com.yandex.mapkit.MapKitFactory;
 import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.map.CameraPosition;
+import com.yandex.mapkit.map.MapObjectCollection;
 import com.yandex.mapkit.mapview.MapView;
+import com.yandex.runtime.image.ImageProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,13 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
     private Button changeRoomBut;
     private TextView roomText;
+    private TextView coordsText;
 
     private MapView mapView;
+    private MapObjectCollection mapObjects;
 
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://chat.socket.io");
+            mSocket = IO.socket("ws://5.101.50.195:8001");
         }
         catch (URISyntaxException ignored) {}
     }
@@ -56,17 +61,21 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     JSONObject data = (JSONObject) args[0];
-                    String username;
-                    String message;
+                    String id;
+                    String type;
+                    String created_at = null;
+                    String updated_at;
+                    String buttonId = null;
                     try {
-                        username = data.getString("username");
-                        message = data.getString("message");
+                        id = data.getString("username");
+                        type = data.getString("message");
                     } catch (JSONException e) {
                         return;
                     }
 
                     // add the message to view
-                    //addMessage(username, message);
+
+                    findPlace(id, type, created_at, buttonId, "1", "1");
                 }
             });
         }
@@ -85,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         changeRoomBut = findViewById(R.id.buttonChangeRoom);
-        TextView coordsText = findViewById(R.id.TextCoords);
         roomText = findViewById(R.id.TextCurRoom);
+        coordsText = findViewById(R.id.TextCoords);
         coordsText.setText("Everything all right");
 
         mapView = findViewById(R.id.mapView_);
@@ -139,7 +148,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mSocket.on(room, onNewMessage);
-        mSocket.connect();
+        mSocket.connect();/*
+        while(! mSocket.connected()) {
+            Log.wtf("mSocketCon", "NO");
+        }
+        Log.wtf("mSocketCon", "YES");*/
     }
 
     @Override
@@ -159,4 +172,28 @@ public class MainActivity extends AppCompatActivity {
         mSocket.disconnect();
 
     }
+
+    private void findPlace(String id, String type, String created_at,
+                            String buttonId, String lat, String lon) {
+
+        mapObjects = mapView.getMap().getMapObjects();
+        mapObjects.clear();
+
+        mapObjects.addPlacemark(new Point(Float.parseFloat(lat), Float.parseFloat(lon)),
+                ImageProvider.fromResource(MainActivity.this, R.drawable.search_result));
+        if(type.equals("click")) {
+            coordsText.setText(id + " trouble");
+        }
+        else {
+            coordsText.setText("idk");
+        }
+
+
+        mapView.getMap()
+                .move(new CameraPosition(new Point(Float.parseFloat(lat),
+                                Float.parseFloat(lon)), 15.0f, 0.0f, 0.0f),
+                        new Animation(Animation.Type.SMOOTH, 0), null);
+
+    }
+
 }
