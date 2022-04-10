@@ -30,7 +30,7 @@ import io.socket.emitter.Emitter;
 
 public class MainActivity extends AppCompatActivity {
     private String room = "null";
-    private String bufStrLat = "55.648100", bufStrLon = "37.652216";
+    private String bufStrLat = "55.648100", bufStrLon = "37.652216", bufStr = null;
 
     private Button changeRoomBut;
     private TextView roomText;
@@ -40,14 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private MapObjectCollection mapObjects;
 
     private Socket mSocket;
-    {
-        try {
-            mSocket = IO.socket("http://5.101.50.195");
-        }
-        catch (URISyntaxException ignored) {
 
-        }
-    }
 
     private final String APP_PREFERENCES = "usersettings";
     private SharedPreferences mSettings;
@@ -60,20 +53,26 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             JSONObject data = (JSONObject) args[0];
+            Log.wtf("AvisActivity", "?????");
             String id;
-            String type;
+            String button_address;
             String created_at = null;
-            String buttonId = null;
+            String status = null;
             try {
-                id = data.getString("username");
-                type = data.getString("message");
+                id = data.getString("id");
+                Log.wtf("id", id);
+                status = data.getString("status");
+                Log.wtf("mts_id", status);
+                button_address = data.getString("button_address");
+                Log.wtf("type", button_address);
             } catch (JSONException e) {
+
                 return;
             }
 
             // add the message to view
 
-            findPlace(id, type, created_at, buttonId, "1", "1");
+            findPlace(id, button_address, created_at, status, "1", "1");
         }
     });
 
@@ -97,6 +96,25 @@ public class MainActivity extends AppCompatActivity {
         mapView = findViewById(R.id.mapView_);
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
+        if(mSettings.contains(APP_PREFERENCES_ROOM)) {
+            room = mSettings.getString(APP_PREFERENCES_ROOM, "ws://5.101.50.195/");
+        }
+
+        if(room.length() < 10) room = "ws://5.101.50.195/";
+
+
+        try {
+            mSocket = IO.socket(room);
+            Log.wtf("AvisActivity", "AAAsocket");
+        }
+        catch (URISyntaxException ignored) {
+            Log.wtf("AvisActivity", "error connecting to socket");
+        }
+
+        if(room.equals("null")) {
+            Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
+            startActivity(intent);
+        }
 
         if(mSettings.contains(APP_PREFERENCES_LATITUDE)) {
             bufStrLat = mSettings.getString(APP_PREFERENCES_LATITUDE, "55.648100");
@@ -112,14 +130,6 @@ public class MainActivity extends AppCompatActivity {
 
         //mapView.getMap().addCameraListener(Context);
 
-        if(mSettings.contains(APP_PREFERENCES_ROOM)) {
-            room = mSettings.getString(APP_PREFERENCES_ROOM, "null");
-        }
-
-        if(room.equals("null")) {
-            Intent intent = new Intent(MainActivity.this, RegistrationActivity.class);
-            startActivity(intent);
-        }
 
     }
 
@@ -127,6 +137,15 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         mSocket.disconnect();
+        mSocket.off("click", onNewMessage);
+        if(room.length() < 2) room = "ws://5.101.50.195/";
+        try {
+            mSocket = IO.socket(room);
+            Log.wtf("AvisActivity", "AAAsocket");
+        }
+        catch (URISyntaxException ignored) {
+            Log.wtf("AvisActivity", "error connecting to socket");
+        }
 
         mapView.onStart();
         MapKitFactory.getInstance().onStart();
@@ -143,16 +162,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        mSocket.on(room, onNewMessage);
+        mSocket.disconnect();
+        mSocket.off("click", onNewMessage);
+        if(room.length() < 2) room = "ws://5.101.50.195/";
+        try {
+            mSocket = IO.socket(room);
+            Log.wtf("AvisActivity", "AAAsocket");
+        }
+        catch (URISyntaxException ignored) {
+            Log.wtf("AvisActivity", "error connecting to socket");
+        }
+
+        mSocket.on("click", onNewMessage);
         mSocket.connect();
 
-        //debug
-        /*
-        while(! mSocket.connected()) {
-            Log.wtf("mSocketCon", "NO");
-        }
-        Log.wtf("mSocketCon", "YES");
-        */
+
     }
 
     @Override
@@ -174,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void findPlace(String id, String type, String created_at,
-                            String buttonId, String lat, String lon) {
+                            String mts_id, String lat, String lon) {
 
         mapObjects = mapView.getMap().getMapObjects();
         mapObjects.clear();
