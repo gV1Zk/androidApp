@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button changeRoomBut;
     private TextView roomText;
-    private TextView coordsText;
+    private TextView cordsText;
 
     private MapView mapView;
     private MapObjectCollection mapObjects;
@@ -54,32 +53,26 @@ public class MainActivity extends AppCompatActivity {
     private final String APP_PREFERENCES_LONGITUDE = "longitude";
 
 
-    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+    private Emitter.Listener onNewMessage = args -> MainActivity.this.runOnUiThread(new Runnable() {
         @Override
-        public void call(final Object... args) {
-            MainActivity.this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String id;
-                    String type;
-                    String created_at = null;
-                    String updated_at;
-                    String buttonId = null;
-                    try {
-                        id = data.getString("username");
-                        type = data.getString("message");
-                    } catch (JSONException e) {
-                        return;
-                    }
+        public void run() {
+            JSONObject data = (JSONObject) args[0];
+            String id;
+            String type;
+            String created_at = null;
+            String buttonId = null;
+            try {
+                id = data.getString("username");
+                type = data.getString("message");
+            } catch (JSONException e) {
+                return;
+            }
 
-                    // add the message to view
+            // add the message to view
 
-                    findPlace(id, type, created_at, buttonId, "1", "1");
-                }
-            });
+            findPlace(id, type, created_at, buttonId, "1", "1");
         }
-    };
+    });
 
 
     @Override
@@ -95,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         changeRoomBut = findViewById(R.id.buttonChangeRoom);
         roomText = findViewById(R.id.TextCurRoom);
-        coordsText = findViewById(R.id.TextCoords);
-        coordsText.setText("Everything all right");
+        cordsText = findViewById(R.id.TextCoords);
+        cordsText.setText("Everything all right");
 
         mapView = findViewById(R.id.mapView_);
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
@@ -148,11 +141,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mSocket.on(room, onNewMessage);
-        mSocket.connect();/*
+        mSocket.connect();
+        /*
         while(! mSocket.connected()) {
             Log.wtf("mSocketCon", "NO");
         }
-        Log.wtf("mSocketCon", "YES");*/
+        Log.wtf("mSocketCon", "YES");
+        */
     }
 
     @Override
@@ -182,12 +177,11 @@ public class MainActivity extends AppCompatActivity {
         mapObjects.addPlacemark(new Point(Float.parseFloat(lat), Float.parseFloat(lon)),
                 ImageProvider.fromResource(MainActivity.this, R.drawable.search_result));
         if(type.equals("click")) {
-            coordsText.setText(id + " trouble");
+            cordsText.setText(id + " trouble");
         }
         else {
-            coordsText.setText("idk");
+            cordsText.setText("idk");
         }
-
 
         mapView.getMap()
                 .move(new CameraPosition(new Point(Float.parseFloat(lat),
