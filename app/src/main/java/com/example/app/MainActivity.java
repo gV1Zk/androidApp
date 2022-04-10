@@ -15,11 +15,15 @@ import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.map.CameraPosition;
 import com.yandex.mapkit.mapview.MapView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.URISyntaxException;
 import java.util.Objects;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class MainActivity extends AppCompatActivity {
     private String room = "null";
@@ -44,6 +48,29 @@ public class MainActivity extends AppCompatActivity {
     private final String APP_PREFERENCES_LATITUDE = "latitude";
     private final String APP_PREFERENCES_LONGITUDE = "longitude";
 
+
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String username;
+                    String message;
+                    try {
+                        username = data.getString("username");
+                        message = data.getString("message");
+                    } catch (JSONException e) {
+                        return;
+                    }
+
+                    // add the message to view
+                    //addMessage(username, message);
+                }
+            });
+        }
+    };
 
 
     @Override
@@ -94,6 +121,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
+        mSocket.disconnect();
+
         mapView.onStart();
         MapKitFactory.getInstance().onStart();
 
@@ -109,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        mSocket.on(room, onNewMessage);
         mSocket.connect();
     }
 
@@ -125,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putString(APP_PREFERENCES_LATITUDE, latitude);
         editor.putString(APP_PREFERENCES_LONGITUDE, longitude);
         editor.apply();
+
+        mSocket.disconnect();
 
     }
 }
